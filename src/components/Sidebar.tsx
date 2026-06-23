@@ -68,7 +68,7 @@ export function Sidebar({ user }: SidebarProps) {
         </button>
 
         <Link
-          href="/dashboard/history"
+          href="/dashboard/history" 
           className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-ink-300 hover:bg-white/5 hover:text-white transition-all"
         >
           <BarChart3 size={15} />
@@ -125,7 +125,9 @@ export function Sidebar1({ user }: SidebarProps) {
           <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-glow-green/30 to-glow-blue/30 flex items-center justify-center border border-glow-green/20">
             <span className="text-glow-green text-sm font-bold font-mono">G</span>
           </div>
-          <span className="font-display font-bold text-white text-lg">SEO Genius</span>
+          <span className="font-display font-bold text-white text-lg">SEO 
+            
+            Genius</span>
         </div>
       </div>
 
@@ -171,16 +173,19 @@ export function Sidebar1({ user }: SidebarProps) {
         </Link>
       </nav>
 
+
       {/* User */}
       <div className="px-3 py-4 border-t border-white/5">
         <div className="flex items-center gap-3 px-2 py-2 rounded-lg glass mb-2">
           {user.image ? (
             <Image src={user.image} alt="" width={28} height={28} className="rounded-full" />
+            
           ) : (
             <div className="w-7 h-7 rounded-full bg-glow-purple/30 flex items-center justify-center text-xs font-bold text-glow-purple">
               {user.name?.[0] || 'U'}
             </div>
           )}
+
           <div className="flex-1 min-w-0">
             <p className="text-xs font-medium text-white truncate">{user.name}</p>
             <p className="text-xs text-ink-400 truncate">{user.email}</p>

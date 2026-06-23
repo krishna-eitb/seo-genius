@@ -31,7 +31,7 @@ const ACCESS_TOKEN = process.env.GOOGLE_ACCESS_TOKEN
 function getClient() {
   const auth = new google.auth.OAuth2()
   auth.setCredentials({ access_token: ACCESS_TOKEN })
-  return google.searchconsole({ version: 'v1', auth })
+  return google.searchconsole({ version: 'v1', auth }) 
 }
 
 function getDateRange(days) {

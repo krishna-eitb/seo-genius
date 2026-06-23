@@ -206,11 +206,12 @@ export interface GSCData {
     avgCTR: number
     avgPosition: number
     previousPeriod?: {
-      totalClicks: number
+      totalClicks: number  
       totalImpressions: number
       avgCTR: number
       avgPosition: number
-    }
+    }  
+    
   }
   topQueries: Array<{
     query: string

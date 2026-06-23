@@ -15,6 +15,11 @@ export function UrlInputPanel() {
   const [showSites, setShowSites] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const panelRef = useRef<HTMLDivElement>(null)
+  const [isCustom, setIsCustom] = useState(false);
+  const [customRange, setCustomRange] = useState({
+    from: '',
+    to: ''
+  });
 
   // Load site list on mount
   useEffect(() => {
@@ -38,7 +43,8 @@ export function UrlInputPanel() {
 
   const handleAnalyze = async () => {
     if (!url.trim()) { toast.error('Please enter a website URL'); return }
-    const siteUrl = url.startsWith('http') ? url : `sc-domain:${url}`
+    const siteUrl = url.startsWith('http') 
+    ? url : `sc-domain:${url}`
 
     setIsLoading(true)
     setLoadingReport(true)
@@ -66,6 +72,17 @@ export function UrlInputPanel() {
   }
 
   const dayOptions = [7, 14, 28, 90]
+
+  let fromDate, toDate;
+
+if (isCustom) {
+  fromDate = customRange.from;
+  toDate = customRange.to;
+} else {
+  toDate = new Date();
+  fromDate = new Date();
+  fromDate.setDate(toDate.getDate() - days);
+}
 
   return (
     <div ref={panelRef} className="w-full max-w-2xl">
@@ -133,21 +150,58 @@ export function UrlInputPanel() {
           <div>
             <label className="block text-xs text-ink-400 font-mono mb-2 uppercase tracking-wider">Date Range</label>
             <div className="flex gap-2">
-              {dayOptions.map(d => (
-                <button
-                  key={d}
-                  onClick={() => setDays(d)}
-                  className={cn(
-                    'flex-1 py-2 rounded-lg text-sm font-medium transition-all duration-150',
-                    days === d
-                      ? 'bg-glow-green/15 text-glow-green border border-glow-green/30'
-                      : 'glass text-ink-300 hover:text-white border border-white/5'
-                  )}
-                >
-                  {d}d
-                </button>
-              ))}
-            </div>
+  {dayOptions.map(d => (
+    <button
+      key={d}
+      onClick={() => {
+        setDays(d);
+        setIsCustom(false);
+      }}
+      className={cn(
+        'flex-1 py-2 rounded-lg text-sm font-medium transition-all duration-150',
+        !isCustom && days === d
+          ? 'bg-glow-green/15 text-glow-green border border-glow-green/30'
+          : 'glass text-ink-300 hover:text-white border border-white/5'
+      )}
+    >
+      {d}d
+    </button>
+  ))}
+
+  {/* Custom button */}
+  <button
+    onClick={() => setIsCustom(true)}
+    className={cn(
+      'flex-1 py-2 rounded-lg text-sm font-medium',
+      isCustom
+        ? 'bg-glow-green/15 text-glow-green border border-glow-green/30'
+        : 'glass text-ink-300 hover:text-white border border-white/5'
+    )}
+  >
+    Custom
+  </button>
+</div>
+{isCustom && (
+  <div className="flex gap-2 mt-3">
+    <input
+      type="date"
+      value={customRange.from}
+      onChange={(e) =>
+        setCustomRange({ ...customRange, from: e.target.value })
+      }
+      className="flex-1 px-3 py-2 rounded-lg glass text-sm"
+    />
+    <input
+      type="date"
+      value={customRange.to}
+      onChange={(e) =>
+        setCustomRange({ ...customRange, to: e.target.value })
+      }
+      className="flex-1 px-3 py-2 rounded-lg glass text-sm"
+    />
+  </div>
+)}
+
           </div>
 
           {/* Submit */}
