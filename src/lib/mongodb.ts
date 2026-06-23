@@ -21,6 +21,9 @@ if (!cached) {
   cached = global.mongooseCache = { conn: null, promise: null }
 }
 
+console.log("Connecting to MongoDB...");
+console.log(process.env.MONGODB_URI?.replace(/\/\/.*:.*@/, "//***:***@"));
+
 async function connectDB() {
   if (cached.conn) {
     return cached.conn
