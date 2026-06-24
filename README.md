@@ -65,28 +65,12 @@ cp .env.local.example .env.local
 
 Fill in your `.env.local`:
 
-```env
-# Google OAuth
-GOOGLE_CLIENT_ID=your_client_id_here
-GOOGLE_CLIENT_SECRET=your_client_secret_here
-
-# NextAuth (generate with: openssl rand -base64 32)
-NEXTAUTH_URL=http://localhost:3000
-NEXTAUTH_SECRET=your_32_char_secret_here
-
-# MongoDB Atlas
-MONGODB_URI=mongodb+srv://user:pass@cluster.mongodb.net/gsc-insight
-
-# OpenAI
-OPENAI_API_KEY=sk-...
-OPENAI_MODEL=gpt-4o
-```
 
 ### 4. MongoDB
 
 1. Create a free cluster at [mongodb.com](https://mongodb.com)
 2. Create a database user
-3. Get the connection string and paste into `MONGODB_URI`
+
 
 ### 5. Run
 
