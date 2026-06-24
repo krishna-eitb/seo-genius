@@ -59,18 +59,6 @@ npm install
 
 ### 3. Environment variables
 
-```bash
-cp .env.local.example .env.local
-```
-
-Fill in your `.env.local`:
-
-
-### 4. MongoDB
-
-1. Create a free cluster at [mongodb.com](https://mongodb.com)
-2. Create a database user
-
 
 ### 5. Run
 
@@ -78,7 +66,6 @@ Fill in your `.env.local`:
 npm run dev
 ```
 
-Visit `http://localhost:3000`
 
 ---
 
@@ -171,10 +158,6 @@ Update Google OAuth redirect URI to your production URL:
 
 ### Environment for production
 
-```env
-NEXTAUTH_URL=https://your-domain.com
-NEXT_PUBLIC_APP_URL=https://your-domain.com
-```
 
 ---
 
