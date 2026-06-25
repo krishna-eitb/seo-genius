@@ -32,11 +32,11 @@ export async function POST(req: NextRequest) {
     // Fetch all GSC data in parallel
     const [queryRows, pageRows, deviceRows, countryRows, prevQueryRows, sitemaps] =
       await Promise.allSettled([
-        fetchSearchAnalytics(session.accessToken, siteUrl, startDate, endDate, ['query'], 500),
-        fetchSearchAnalytics(session.accessToken, siteUrl, startDate, endDate, ['page'], 500),
+        fetchSearchAnalytics(session.accessToken, siteUrl, startDate, endDate, ['query'], 100),
+        fetchSearchAnalytics(session.accessToken, siteUrl, startDate, endDate, ['page'], 100),
         fetchSearchAnalytics(session.accessToken, siteUrl, startDate, endDate, ['device']),
         fetchSearchAnalytics(session.accessToken, siteUrl, startDate, endDate, ['country'], 50),
-        fetchSearchAnalytics(session.accessToken, siteUrl, prevStart, prevEnd, ['query'], 500),
+        fetchSearchAnalytics(session.accessToken, siteUrl, prevStart, prevEnd, ['query'], 100),
         fetchSitemaps(session.accessToken, siteUrl),
       ])
 

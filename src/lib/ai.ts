@@ -1,8 +1,9 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
-const MODEL = "gemini-2.5-pro"
-
+const MODEL =
+  process.env.GEMINI_MODEL ||
+  "gemini-2.5-flash";
 export interface GSCData {
   siteUrl: string
   dateRange: { start: string; end: string }
@@ -81,55 +82,184 @@ function extractJSON(text: string): string {
   return match[0]
 }
 
-export async function analyzeGSCData(data: GSCData): Promise<AnalysisResult> {
-  const prompt = buildAnalysisPrompt(data)
+// export async function analyzeGSCData(data: GSCData): Promise<AnalysisResult> {
+//   const prompt = buildAnalysisPrompt(data)
 
-  const model = genAI.getGenerativeModel({ model: MODEL })
+//   const model = genAI.getGenerativeModel({ model: MODEL })
 
-  const result = await model.generateContent([
-    {
-      text: `You are an expert SEO analyst.
+//   const result = await model.generateContent([
+//     {
+//       text: `You are an expert SEO analyst.
 
-IMPORTANT:
-- Return ONLY raw JSON
-- No explanation
-- No markdown
-- No extra text
-- Must be valid JSON
-`,
-    },
-    {
-      text: prompt,
-    },
-  ])
+// IMPORTANT:
+// - Return ONLY raw JSON
+// - No explanation
+// - No markdown
+// - No extra text
+// - Must be valid JSON
+// `,
+//     },
+//     {
+//       text: prompt,
+//     },
+//   ])
 
-  const response = await result.response
-  const text = response.text()
+//   const response = await result.response
+//   const text = response.text()
 
-  let parsed: AnalysisResult
+//   let parsed: AnalysisResult
 
-  try {
-    const cleanJSON = extractJSON(text)
-    parsed = JSON.parse(cleanJSON)
-  } catch (err) {
-    console.error("❌ JSON parse error:", text)
-    throw new Error("Invalid JSON from Gemini")
+//   try {
+//     const cleanJSON = extractJSON(text)
+//     parsed = JSON.parse(cleanJSON)
+//   } catch (err) {
+//     console.error("❌ JSON parse error:", text)
+//     throw new Error("Invalid JSON from Gemini")
+//   }
+
+//   // Ensure IDs
+//   parsed.suggestions = parsed.suggestions.map((s, i) => ({
+//     ...s,
+//     id: s.id || `suggestion-${i}`,
+//   }))
+
+//   parsed.quickWins =
+//     parsed.quickWins ||
+//     parsed.suggestions.filter(
+//       (s) => s.impact === "high" && s.effort === "easy"
+//     )
+
+//   return parsed
+// }
+
+export async function analyzeGSCData(
+  data: GSCData
+): Promise<AnalysisResult> {
+  const optimizedData = {
+    siteUrl: data.siteUrl,
+
+    overview: data.overview,
+
+    topQueries: data.topQueries
+      .sort((a, b) => b.clicks - a.clicks)
+      .slice(0, 20),
+
+    topPages: data.topPages
+      .sort((a, b) => b.clicks - a.clicks)
+      .slice(0, 20),
+
+    devices: data.devices,
+
+    countries: data.countries.slice(0, 10),
   }
 
-  // Ensure IDs
-  parsed.suggestions = parsed.suggestions.map((s, i) => ({
-    ...s,
-    id: s.id || `suggestion-${i}`,
-  }))
+  const prompt = `
+You are a senior SEO consultant.
 
-  parsed.quickWins =
-    parsed.quickWins ||
-    parsed.suggestions.filter(
-      (s) => s.impact === "high" && s.effort === "easy"
-    )
+Analyze this Google Search Console data.
 
-  return parsed
+DATA:
+${JSON.stringify(optimizedData)}
+
+Return ONLY valid JSON.
+
+{
+  "summary": "",
+  "healthScore": 0,
+  "strengths": [],
+  "weaknesses": [],
+  "suggestions": [
+    {
+      "id": "s1",
+      "category": "ctr",
+      "title": "",
+      "description": "",
+      "impact": "high",
+      "effort": "easy",
+      "specificData": "",
+      "actionItems": []
+    }
+  ],
+  "quickWins": []
 }
+
+Rules:
+- Health score 0-100
+- 5-8 suggestions maximum
+- Use actual GSC numbers
+- Return JSON only
+`;
+
+  const model = genAI.getGenerativeModel({
+  model: MODEL,
+});
+  const timeoutPromise = new Promise((_, reject) => {
+    setTimeout(() => {
+      reject(new Error("Gemini request timeout"));
+    }, 20000);
+  });
+
+  try {
+    const result: any = await Promise.race([
+      model.generateContent(prompt),
+      timeoutPromise,
+    ]);
+
+    const response = await result.response;
+    const text = response.text();
+
+    const cleanJSON = extractJSON(text);
+
+    const parsed: AnalysisResult = JSON.parse(cleanJSON);
+
+    parsed.suggestions = (parsed.suggestions || []).map(
+      (s, index) => ({
+        ...s,
+        id: s.id || `suggestion-${index + 1}`,
+      })
+    );
+
+    parsed.quickWins =
+      parsed.quickWins?.length
+        ? parsed.quickWins
+        : parsed.suggestions.filter(
+            (s) =>
+              s.impact === "high" &&
+              s.effort === "easy"
+          );
+
+    return parsed;
+  } catch (error) {
+    console.error("Gemini Analysis Error:", error);
+
+    return {
+      summary:
+        "AI analysis temporarily unavailable. Basic report generated successfully.",
+      healthScore: 75,
+      strengths: [],
+      weaknesses: [],
+      suggestions: [
+        {
+          id: "fallback-1",
+          category: "content",
+          title: "Review Top Performing Queries",
+          description:
+            "AI analysis timed out. Review top performing queries manually.",
+          impact: "medium",
+          effort: "easy",
+          specificData: "",
+          actionItems: [
+            "Review top queries",
+            "Improve CTR",
+            "Optimize top pages",
+          ],
+        },
+      ],
+      quickWins: [],
+    };
+  }
+}
+
 
 export async function chatWithGSCData(
   userMessage: string,
