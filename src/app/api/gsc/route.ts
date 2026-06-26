@@ -32,7 +32,7 @@ export async function POST(req: NextRequest) {
     // Fetch all GSC data in parallel
     const [queryRows, pageRows, deviceRows, countryRows, prevQueryRows, sitemaps] =
       await Promise.allSettled([
-        fetchSearchAnalytics(session.accessToken, siteUrl, startDate, endDate, ['query'], 2500),
+        fetchSearchAnalytics(session.accessToken, siteUrl, startDate, endDate, ['query'], 25000),
         fetchSearchAnalytics(session.accessToken, siteUrl, startDate, endDate, ['page'], 100),
         fetchSearchAnalytics(session.accessToken, siteUrl, startDate, endDate, ['device']),
         fetchSearchAnalytics(session.accessToken, siteUrl, startDate, endDate, ['country'], 50),
@@ -41,6 +41,9 @@ export async function POST(req: NextRequest) {
       ])
 
     const queries = queryRows.status === 'fulfilled' ? queryRows.value : []
+    console.log("=================================");
+console.log("Query Count:", queries.length);
+
     const pages = pageRows.status === 'fulfilled' ? pageRows.value : []
     const devices = deviceRows.status === 'fulfilled' ? deviceRows.value : []
     const countries = countryRows.status === 'fulfilled' ? countryRows.value : []
@@ -48,6 +51,8 @@ export async function POST(req: NextRequest) {
 
     // Calculate overview
     const totalClicks = queries.reduce((s, r) => s + (r.clicks || 0), 0)
+    console.log("Total Clicks:", totalClicks);
+console.log("=================================");
     const totalImpressions = queries.reduce((s, r) => s + (r.impressions || 0), 0)
     const avgCTR = calculateCTR(totalClicks, totalImpressions)
     const avgPosition =
