@@ -310,7 +310,7 @@ export default function Page() {
             {/* Heading */}
             <h1
               ref={headingRef}
-              className="text-5xl md:text-7xl xl:text-8xl font-black leading-[0.95] tracking-[-0.06em]"
+              className="text-4xl md:text-6xl xl:text-7xl font-black leading-[0.95] tracking-[-0.06em]"
             >
               <div ref={line1Ref} className="overflow-hidden pb-1 text-slate-900">
                 Scale Your
