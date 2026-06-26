@@ -90,7 +90,7 @@ if (isCustom) {
       <div className="text-center mb-10">
         <div className="inline-flex items-center gap-2 px-3 py-1.5 glass rounded-full text-xs text-glow-green border border-glow-green/20 font-mono mb-5">
           <Zap size={11} />
-          Powered by GPT-4o + Google Search Console
+          Powered by Gemini + Google Search Console
         </div>
         <h2 className="font-display text-4xl font-bold text-white mb-3">
           Analyze Any Website

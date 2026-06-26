@@ -28,9 +28,9 @@ export function Sidebar({ user }: SidebarProps) {
       <div className="px-5 py-5 border-b border-white/5">
         <div className="flex items-center gap-2.5">
           <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-glow-green/30 to-glow-blue/30 flex items-center justify-center border border-glow-green/20">
-            <span className="text-glow-green text-sm font-bold font-mono">G</span>
+            <span className="text-glow-green text-sm font-bold font-mono">B</span>
           </div>
-          <span className="font-display font-bold text-white text-lg">SEO Genius</span>
+          <span className="font-display font-bold text-white text-lg">SEO Brain</span>
         </div>
       </div>
 
@@ -127,7 +127,7 @@ export function Sidebar1({ user }: SidebarProps) {
           </div>
           <span className="font-display font-bold text-white text-lg">SEO 
             
-            Genius</span>
+            Brain</span>
         </div>
       </div>
 
