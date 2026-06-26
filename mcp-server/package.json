@@ -1,0 +1,13 @@
+{
+  "name": "gsc-mcp-server",
+  "version": "1.0.0",
+  "description": "MCP server for Google Search Console",
+  "main": "gsc-mcp.js",
+  "scripts": {
+    "start": "node gsc-mcp.js"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0",
+    "googleapis": "^140.0.1"
+  }
+}
