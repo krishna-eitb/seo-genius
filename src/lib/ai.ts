@@ -82,55 +82,7 @@ function extractJSON(text: string): string {
   return match[0]
 }
 
-// export async function analyzeGSCData(data: GSCData): Promise<AnalysisResult> {
-//   const prompt = buildAnalysisPrompt(data)
 
-//   const model = genAI.getGenerativeModel({ model: MODEL })
-
-//   const result = await model.generateContent([
-//     {
-//       text: `You are an expert SEO analyst.
-
-// IMPORTANT:
-// - Return ONLY raw JSON
-// - No explanation
-// - No markdown
-// - No extra text
-// - Must be valid JSON
-// `,
-//     },
-//     {
-//       text: prompt,
-//     },
-//   ])
-
-//   const response = await result.response
-//   const text = response.text()
-
-//   let parsed: AnalysisResult
-
-//   try {
-//     const cleanJSON = extractJSON(text)
-//     parsed = JSON.parse(cleanJSON)
-//   } catch (err) {
-//     console.error("❌ JSON parse error:", text)
-//     throw new Error("Invalid JSON from Gemini")
-//   }
-
-//   // Ensure IDs
-//   parsed.suggestions = parsed.suggestions.map((s, i) => ({
-//     ...s,
-//     id: s.id || `suggestion-${i}`,
-//   }))
-
-//   parsed.quickWins =
-//     parsed.quickWins ||
-//     parsed.suggestions.filter(
-//       (s) => s.impact === "high" && s.effort === "easy"
-//     )
-
-//   return parsed
-// }
 
 export async function analyzeGSCData(
   data: GSCData
